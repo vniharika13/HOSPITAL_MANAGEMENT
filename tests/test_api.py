@@ -43,7 +43,7 @@ def client():
 
 def test_create_and_get_patient(client):
     response = client.post(
-        "/api/v1/patients",
+        "/patients",
         json={
             "name": "Alice Johnson",
             "email": "alice@example.com",
@@ -54,14 +54,14 @@ def test_create_and_get_patient(client):
     patient = response.json()
     assert patient["name"] == "Alice Johnson"
 
-    response = client.get(f"/api/v1/patients/{patient['id']}")
+    response = client.get(f"/patients/{patient['id']}")
     assert response.status_code == 200
     assert response.json()["email"] == "alice@example.com"
 
 
 def test_create_and_get_doctor(client):
     response = client.post(
-        "/api/v1/doctors",
+        "/doctors",
         json={
             "name": "Dr. Smith",
             "specialization": "Cardiology",
@@ -71,14 +71,14 @@ def test_create_and_get_doctor(client):
     doctor = response.json()
     assert doctor["specialization"] == "Cardiology"
 
-    response = client.get(f"/api/v1/doctors/{doctor['id']}")
+    response = client.get(f"/doctors/{doctor['id']}")
     assert response.status_code == 200
     assert response.json()["name"] == "Dr. Smith"
 
 
 def test_create_appointment_successfully(client):
     patient = client.post(
-        "/api/v1/patients",
+        "/patients",
         json={
             "name": "Bob",
             "email": "bob@example.com",
@@ -86,7 +86,7 @@ def test_create_appointment_successfully(client):
         },
     ).json()
     doctor = client.post(
-        "/api/v1/doctors",
+        "/doctors",
         json={"name": "Dr. White", "specialization": "Neurology"},
     ).json()
 
@@ -94,7 +94,7 @@ def test_create_appointment_successfully(client):
     end = datetime(2026, 1, 10, 10, 0, 0)
 
     response = client.post(
-        "/api/v1/appointments",
+        "/appointments",
         json={
             "patient_id": patient["id"],
             "doctor_id": doctor["id"],
@@ -110,7 +110,7 @@ def test_create_appointment_successfully(client):
 
 def test_reject_overlapping_appointments(client):
     patient = client.post(
-        "/api/v1/patients",
+        "/patients",
         json={
             "name": "Carol",
             "email": "carol@example.com",
@@ -118,7 +118,7 @@ def test_reject_overlapping_appointments(client):
         },
     ).json()
     doctor = client.post(
-        "/api/v1/doctors",
+        "/doctors",
         json={"name": "Dr. Brown", "specialization": "Dermatology"},
     ).json()
 
@@ -128,7 +128,7 @@ def test_reject_overlapping_appointments(client):
     second_end = datetime(2026, 2, 10, 15, 30, 0)
 
     first = client.post(
-        "/api/v1/appointments",
+        "/appointments",
         json={
             "patient_id": patient["id"],
             "doctor_id": doctor["id"],
@@ -139,7 +139,7 @@ def test_reject_overlapping_appointments(client):
     assert first.status_code == 201
 
     second = client.post(
-        "/api/v1/appointments",
+        "/appointments",
         json={
             "patient_id": patient["id"],
             "doctor_id": doctor["id"],
@@ -153,7 +153,7 @@ def test_reject_overlapping_appointments(client):
 
 def test_get_all_endpoints_and_missing_resources(client):
     client.post(
-        "/api/v1/patients",
+        "/patients",
         json={
             "name": "Dana",
             "email": "dana@example.com",
@@ -161,24 +161,24 @@ def test_get_all_endpoints_and_missing_resources(client):
         },
     )
     client.post(
-        "/api/v1/doctors",
+        "/doctors",
         json={
             "name": "Dr. Green",
             "specialization": "Pediatrics",
         },
     )
 
-    patients = client.get("/api/v1/patients")
-    doctors = client.get("/api/v1/doctors")
-    appointments = client.get("/api/v1/appointments")
+    patients = client.get("/patients")
+    doctors = client.get("/doctors")
+    appointments = client.get("/appointments")
 
     assert patients.status_code == 200
     assert doctors.status_code == 200
     assert appointments.status_code == 200
 
-    missing_patient = client.get("/api/v1/patients/999")
-    missing_doctor = client.get("/api/v1/doctors/999")
-    missing_appointment = client.get("/api/v1/appointments/999")
+    missing_patient = client.get("/patients/999")
+    missing_doctor = client.get("/doctors/999")
+    missing_appointment = client.get("/appointments/999")
 
     assert missing_patient.status_code == 404
     assert missing_doctor.status_code == 404

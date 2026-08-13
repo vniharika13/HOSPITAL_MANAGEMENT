@@ -22,20 +22,18 @@ app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
 app.include_router(
     patients_router,
-    prefix=f"{settings.API_V1_STR}/patients",
-    tags=["patients"],
-)
-app.include_router(
-    doctors_router,
-    prefix=f"{settings.API_V1_STR}/doctors",
-    tags=["doctors"],
-)
-app.include_router(
-    appointments_router,
-    prefix=f"{settings.API_V1_STR}/appointments",
-    tags=["appointments"],
+    prefix="/patients",
 )
 
+app.include_router(
+    doctors_router,
+    prefix="/doctors",
+)
+
+app.include_router(
+    appointments_router,
+    prefix="/appointments",
+)
 
 @app.get("/")
 async def root():
