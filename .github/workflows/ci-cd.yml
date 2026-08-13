@@ -28,13 +28,11 @@ jobs:
 
       - name: Install Lint Dependencies
         run: |
-          cd hospital-api
           python -m pip install --upgrade pip
           pip install flake8
 
       - name: Run Flake8
         run: |
-          cd hospital-api
           flake8 app tests
 
 
@@ -54,14 +52,12 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd hospital-api
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: Run Tests With Coverage
         run: |
-          cd hospital-api
           pytest \
             --cov=app \
             --cov-report=xml \
@@ -72,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: hospital-api/coverage.xml
+          path: coverage.xml
 
 
   security:
@@ -91,13 +87,11 @@ jobs:
 
       - name: Install Bandit
         run: |
-          cd hospital-api
           python -m pip install --upgrade pip
           pip install bandit[toml]
 
       - name: Run Bandit Security Scan
         run: |
-          cd hospital-api
           bandit -r app
 
 
@@ -122,7 +116,7 @@ jobs:
       - name: Build And Push Image
         uses: docker/build-push-action@v5
         with:
-          context: ./hospital-api
+          context: .
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/hospital-api:latest
