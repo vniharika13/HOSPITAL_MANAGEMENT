@@ -35,6 +35,7 @@ app.include_router(
     prefix="/appointments",
 )
 
+
 @app.get("/")
 async def root():
     return {"message": "Hospital API is running"}
