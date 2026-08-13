@@ -5,6 +5,6 @@ line-length = 88
 ignore = ["B008", "DTZ001"]
 
 [tool.pytest.ini_options]
-pythonpath=["app"]
+pythonpath=["."]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
