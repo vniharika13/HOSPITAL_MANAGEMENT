@@ -135,4 +135,4 @@ jobs:
           echo "Tests Passed"
           echo "Coverage Passed"
           echo "Security Scan Passed"
-          echo "Docker Image Published"
+          echo ".Docker Image Published"
